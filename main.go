@@ -2,33 +2,22 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"go-fiber-rest-api/book"
-	"go-fiber-rest-api/database"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger" // new
-
+	"go-fiber-rest-api/database"
+	"go-fiber-rest-api/routes"
 )
-
-
-func setupRoute(app *fiber.App){
-	app.Get("/api/v1/books",book.GetBooks);
-	app.Get("/api/v1/book/:id",book.GetBook);
-	app.Post("/api/v1/books",book.NewBook);
-	app.Delete("/api/v1/book/:id",book.DeleteBook);
-
-}
 
 func main() {
 	app := fiber.New()
 	app.Use(logger.New())
+	app.Use(cors.New(cors.Config{
+		AllowCredentials: true,
+	}))
 
 	database.ConnectDatabase()
-	setupRoute(app);
 
-
-
+	routes.SetupRoute(app)
 	app.Listen((":8000"))
 
-
-
 }
-
